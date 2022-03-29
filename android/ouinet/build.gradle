@@ -63,3 +63,12 @@ dependencies {
     testImplementation 'com.android.support.test:runner:1.0.2'
     testImplementation 'org.assertj:assertj-core:3.11.1'
 }
+
+ext {
+    // Provide your own coordinates here
+    PUBLISH_GROUP_ID = 'io.github.mhqz'
+    PUBLISH_VERSION = '0.3.0'
+    PUBLISH_ARTIFACT_ID = 'netproglibs'
+}
+
+apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
