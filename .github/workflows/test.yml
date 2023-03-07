@@ -11,6 +11,27 @@ env:
 
 jobs:
   build:
+    # Debian buster is used as the base image of this worker,
+    # the following dependencies are installed:
+    #
+    # - autoconf
+    # - automake
+    # - autopoint
+    # - build-essential
+    # - cmake
+    # - gettext
+    # - git
+    # - libssl-dev
+    # - libtool
+    # - ninja-build
+    # - pkg-config
+    # - python-twisted
+    # - rsync
+    # - texinfo
+    # - unzip
+    # - wget
+    # - zlib1g-dev
+
     runs-on: self-hosted
 
     steps:
