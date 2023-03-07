@@ -28,8 +28,8 @@ jobs:
       working-directory: ${{github.workspace}}/build
       run: |
         export LD_LIBRARY_PATH=${{github.workspace}}/build:/usr/local/lib
-        for test in ./build/test/test-*; do
+        for test in ${{github.workspace}}/build/test/test-*; do
             "$test" --log_level=test_suite
         done
         export OUINET_BUILD_DIR=${{github.workspace}}/build
-        ./scripts/run_integration_tests.sh
+        ${{github.workspace}}/scripts/run_integration_tests.sh
