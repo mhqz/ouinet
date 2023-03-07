@@ -32,4 +32,5 @@ jobs:
             "$test" --log_level=test_suite
         done
         export OUINET_BUILD_DIR=${{github.workspace}}/build
+        export OUINET_REPO_DIR=${{github.workspace}}
         ${{github.workspace}}/scripts/run_integration_tests.sh
