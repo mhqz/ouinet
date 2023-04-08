@@ -29,5 +29,5 @@ RUN \
 WORKDIR /src
 RUN \
   function Invoke-Msys() { C:\msys64\usr\bin\bash.exe @('-lc') + @Args; } \
-  Invoke-Msys 'git clone --recursive https://gitlab.com/equalitie/ouinet.git /c/src/ouinet';
+  Invoke-Msys 'git clone --recursive -b windows-client https://github.com/mhqz/ouinet.git /c/src/ouinet'; \
 
