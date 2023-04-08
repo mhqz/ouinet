@@ -8,7 +8,7 @@ endif()
 
 ################################################################################
 # Configurable options
-option(WITH_INJECTOR "Compile injector" ON)
+option(WITH_INJECTOR "Compile injector" OFF)
 
 # NOTE: Need to disable ASan until Boost.Asio switches to Boost.Coroutine2
 #       because trowing (and catching) exceptions inside a coroutine confuses
