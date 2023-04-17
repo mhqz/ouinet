@@ -78,7 +78,7 @@ set(CPPUPnP_DIR ${CMAKE_CURRENT_SOURCE_DIR}/modules/cpp-upnp)
 find_package(CPPUPnP REQUIRED)
 ###########################################################
 
-add_subdirectory(./src/ouiservice/i2p)
+#add_subdirectory(./src/ouiservice/i2p)
 #add_subdirectory(./src/ouiservice/lampshade)
 add_subdirectory(./src/ouiservice/obfs4proxy)
 
@@ -147,7 +147,7 @@ target_link_libraries(client
         lib::uri
         OpenSSL::Crypto
 #        ouinet::lampshade-asio
-        ouinet::ouiservice-i2p
+#        ouinet::ouiservice-i2p
     PUBLIC
         ouinet::base
 )
@@ -199,7 +199,7 @@ if (WITH_INJECTOR)
         OpenSSL::Crypto
         ouinet::base
 #        ouinet::lampshade-asio
-        ouinet::ouiservice-i2p
+#        ouinet::ouiservice-i2p
     )
 endif() # if WITH_INJECTOR
 
