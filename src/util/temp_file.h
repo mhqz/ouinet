@@ -1,6 +1,6 @@
 #pragma once
 
-#include <boost/asio/posix/stream_descriptor.hpp>
+#include <boost/asio/windows/stream_handle.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/optional.hpp>
 #include <boost/system/error_code.hpp>
@@ -40,7 +40,7 @@ public:
     }
 
 public:
-    using lowest_layer_type = asio::posix::stream_descriptor;
+    using lowest_layer_type = asio::windows::stream_handle;
 
     temp_file(const temp_file&) = delete;
     temp_file& operator=(const temp_file&) = delete;

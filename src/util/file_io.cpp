@@ -6,7 +6,7 @@
 namespace ouinet { namespace util { namespace file_io {
 
 namespace errc = boost::system::errc;
-namespace posix = asio::posix;
+namespace windows = asio::windows;
 
 static
 sys::error_code last_error()
@@ -14,7 +14,7 @@ sys::error_code last_error()
     return make_error_code(static_cast<errc::errc_t>(errno));
 }
 
-void fseek(posix::stream_descriptor& f, size_t pos, sys::error_code& ec)
+void fseek(windows::stream_handle& f, size_t pos, sys::error_code& ec)
 {
     if (lseek(f.native_handle(), pos, SEEK_SET) == -1) {
         ec = last_error();
@@ -22,7 +22,7 @@ void fseek(posix::stream_descriptor& f, size_t pos, sys::error_code& ec)
     }
 }
 
-size_t current_position(posix::stream_descriptor& f, sys::error_code& ec)
+size_t current_position(windows::stream_handle& f, sys::error_code& ec)
 {
     off_t offset = lseek(f.native_handle(), 0, SEEK_CUR);
 
@@ -35,7 +35,7 @@ size_t current_position(posix::stream_descriptor& f, sys::error_code& ec)
     return offset;
 }
 
-size_t file_size(posix::stream_descriptor& f, sys::error_code& ec)
+size_t file_size(windows::stream_handle& f, sys::error_code& ec)
 {
     auto start_pos = current_position(f, ec);
     if (ec) return size_t(-1);
@@ -54,7 +54,7 @@ size_t file_size(posix::stream_descriptor& f, sys::error_code& ec)
     return end;
 }
 
-size_t file_remaining_size(posix::stream_descriptor& f, sys::error_code& ec)
+size_t file_remaining_size(windows::stream_handle& f, sys::error_code& ec)
 {
     auto size = file_size(f, ec);
     if (ec) return 0;
@@ -66,23 +66,23 @@ size_t file_remaining_size(posix::stream_descriptor& f, sys::error_code& ec)
 }
 
 static
-posix::stream_descriptor open( int file
+windows::stream_handle open( int file
                              , const asio::executor& exec
                              , sys::error_code& ec)
 {
     if (file == -1) {
         ec = last_error();
         if (!ec) ec = make_error_code(errc::no_message);
-        return asio::posix::stream_descriptor(exec);
+        return asio::windows::stream_handle(exec);
     }
 
-    asio::posix::stream_descriptor f(exec, file);
+    asio::windows::stream_handle f(exec, file);
     fseek(f, 0, ec);
 
     return f;
 }
 
-posix::stream_descriptor open_or_create( const asio::executor& exec
+windows::stream_handle open_or_create( const asio::executor& exec
                                        , const fs::path& p
                                        , sys::error_code& ec)
 {
@@ -90,7 +90,7 @@ posix::stream_descriptor open_or_create( const asio::executor& exec
     return open(file, exec, ec);
 }
 
-posix::stream_descriptor open_readonly( const asio::executor& exec
+windows::stream_handle open_readonly( const asio::executor& exec
                                       , const fs::path& p
                                       , sys::error_code& ec)
 {
@@ -98,7 +98,7 @@ posix::stream_descriptor open_readonly( const asio::executor& exec
     return open(file, exec, ec);
 }
 
-int dup_fd(asio::posix::stream_descriptor& f, sys::error_code& ec)
+int dup_fd(asio::windows::stream_handle& f, sys::error_code& ec)
 {
     int file = ::dup(f.native_handle());
     if (file == -1) {
@@ -108,7 +108,7 @@ int dup_fd(asio::posix::stream_descriptor& f, sys::error_code& ec)
     return file;
 }
 
-void truncate( posix::stream_descriptor& f
+void truncate( windows::stream_handle& f
              , size_t new_length
              , sys::error_code& ec)
 {
@@ -142,7 +142,7 @@ bool check_or_create_directory(const fs::path& dir, sys::error_code& ec)
     }
 }
 
-void read( posix::stream_descriptor& f
+void read( windows::stream_handle& f
          , asio::mutable_buffer b
          , Cancel& cancel
          , asio::yield_context yield)
@@ -153,7 +153,7 @@ void read( posix::stream_descriptor& f
     return_or_throw_on_error(yield, cancel, ec);
 }
 
-void write( posix::stream_descriptor& f
+void write( windows::stream_handle& f
           , asio::const_buffer b
           , Cancel& cancel
           , asio::yield_context yield)
