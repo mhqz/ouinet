@@ -31,10 +31,10 @@ public:
     using Request  = http::request<http::string_body>;
     using Response = http::response<http::dynamic_body>;
 
-    using FetchStored = std::function<CacheEntry(const Request&, const DhtGroup&, Cancel&, Yield)>;
+    using FetchStored = std::function<CacheEntry(const Request&, const DhtGroup&, Cancel&, Yield_)>;
     // If not null, the given cache entry is already available
     // (e.g. this may be a revalidation).
-    using FetchFresh  = std::function<Session(const Request&, const CacheEntry*, Cancel&, Yield)>;
+    using FetchFresh  = std::function<Session(const Request&, const CacheEntry*, Cancel&, Yield_)>;
     // When fetching stored (which may be slow), a parallel request to fetch fresh is started
     // only if this is not null and it returns true.
     using ParallelFresh = std::function<bool(const Request&, const boost::optional<DhtGroup>&)>;
@@ -55,7 +55,7 @@ public:
                   sys::error_code& fresh_ec,
                   sys::error_code& cache_ec,
                   Cancel&,
-                  Yield);
+                  Yield_);
 
     FetchStored  fetch_stored;
     FetchFresh   fetch_fresh;
@@ -86,21 +86,21 @@ private:
             sys::error_code& fresh_ec,
             sys::error_code& cache_ec,
             Cancel&,
-            Yield);
+            Yield_);
 
-    Session do_fetch_fresh( FetchState&, const Request&, const CacheEntry*, Yield);
+    Session do_fetch_fresh( FetchState&, const Request&, const CacheEntry*, Yield_);
     CacheEntry do_fetch_stored( FetchState&
                               , const Request&
                               , const boost::optional<DhtGroup>&
                               , bool& is_fresh
-                              , Yield);
+                              , Yield_);
 
     //bool is_stale( const boost::posix_time::ptime& time_stamp
     //             , const Response&) const;
 
     bool is_older_than_max_cache_age(const boost::posix_time::ptime&) const;
 
-    auto make_fetch_fresh_job(const Request&, const CacheEntry*, Yield);
+    auto make_fetch_fresh_job(const Request&, const CacheEntry*, Yield_);
 
     bool has_temporary_result(const Session&) const;
 

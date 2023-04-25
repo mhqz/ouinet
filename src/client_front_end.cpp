@@ -393,7 +393,7 @@ void ClientFrontEnd::handle_portal( ClientConfig& config
                                   , const util::UdpServerReachabilityAnalysis* reachability
                                   , const Request& req, Response& res, ostringstream& ss
                                   , cache::Client* cache_client
-                                  , Yield yield)
+                                  , Yield_ yield)
 {
     res.set(http::field::content_type, "text/html");
 
@@ -624,7 +624,7 @@ void ClientFrontEnd::handle_status( ClientConfig& config
                                   , const util::UdpServerReachabilityAnalysis* reachability
                                   , const Request& req, Response& res, ostringstream& ss
                                   , cache::Client* cache_client
-                                  , Yield yield)
+                                  , Yield_ yield)
 {
     res.set(http::field::content_type, "application/json");
 
@@ -678,7 +678,7 @@ Response ClientFrontEnd::serve( ClientConfig& config
                               , const UPnPs& upnps
                               , const bittorrent::MainlineDht* dht
                               , const util::UdpServerReachabilityAnalysis* reachability
-                              , Yield yield)
+                              , Yield_ yield)
 {
     Response res{http::status::ok, req.version()};
     res.set(http::field::server, BOOST_BEAST_VERSION_STRING);

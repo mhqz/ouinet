@@ -13,19 +13,19 @@
 
 namespace ouinet {
 
-class Yield : public boost::intrusive::list_base_hook
+class Yield_ : public boost::intrusive::list_base_hook
               < boost::intrusive::link_mode<boost::intrusive::auto_unlink>>
 {
     using Clock = std::chrono::steady_clock;
 
     using List = boost::intrusive::list
-        <Yield, boost::intrusive::constant_time_size<false>>;
+        <Yield_, boost::intrusive::constant_time_size<false>>;
 
     struct TimeoutState {
-        Yield* self;
+        Yield_* self;
         asio::steady_timer timer;
 
-        TimeoutState(const asio::executor& ex, Yield* self)
+        TimeoutState(const asio::executor& ex, Yield_* self)
             : self(self)
             , timer(ex)
         {}
@@ -37,13 +37,13 @@ class Yield : public boost::intrusive::list_base_hook
     };
 
 public:
-    Yield( asio::io_context& ctx
+    Yield_( asio::io_context& ctx
          , asio::yield_context asio_yield
          , std::string con_id = "")
-        : Yield(ctx.get_executor(), asio_yield, std::move(con_id))
+        : Yield_(ctx.get_executor(), asio_yield, std::move(con_id))
     {}
 
-    Yield(const asio::executor& ex
+    Yield_(const asio::executor& ex
          , asio::yield_context asio_yield
          , std::string con_id = "")
         : _ex(ex)
@@ -60,17 +60,17 @@ public:
         start_timing();
     }
 
-    Yield(Yield& parent)
-        : Yield(parent, parent._asio_yield)
+    Yield_(Yield_& parent)
+        : Yield_(parent, parent._asio_yield)
     {
     }
 
-    Yield detach(asio::yield_context yield) {
-        return Yield(*this, yield);
+    Yield_ detach(asio::yield_context yield) {
+        return Yield_(*this, yield);
     }
 
 private:
-    Yield(Yield& parent, asio::yield_context asio_yield)
+    Yield_(Yield_& parent, asio::yield_context asio_yield)
         : _ex(parent._ex)
         , _asio_yield(asio_yield)
         , _ignored_error(parent._ignored_error)
@@ -82,7 +82,7 @@ private:
     }
 
 public:
-    Yield(Yield&& y)
+    Yield_(Yield_&& y)
         : _ex(y._ex)
         , _asio_yield(y._asio_yield)
         , _ignored_error(std::move(y._ignored_error))
@@ -98,9 +98,9 @@ public:
         y._children.push_back(*this);
     }
 
-    Yield tag(std::string t)
+    Yield_ tag(std::string t)
     {
-        Yield ret(*this);
+        Yield_ ret(*this);
         ret._tag = tag() + "/" + t;
         ret.start_timing();
         return ret;
@@ -115,7 +115,7 @@ public:
         return _tag;
     }
 
-    Yield operator[](sys::error_code& ec)
+    Yield_ operator[](sys::error_code& ec)
     {
         return {*this, _asio_yield[ec]};
     }
@@ -125,7 +125,7 @@ public:
         return _asio_yield;
     }
 
-    Yield ignore_error()
+    Yield_ ignore_error()
     {
         return {*this, _asio_yield[*_ignored_error]};
     }
@@ -153,7 +153,7 @@ public:
         return std::forward<F>(f)(_asio_yield);
     }
 
-    ~Yield()
+    ~Yield_()
     {
         if (_children.empty()) {
             stop_timing();
@@ -212,14 +212,14 @@ private:
     asio::yield_context _asio_yield;
     std::shared_ptr<sys::error_code> _ignored_error;
     std::string _tag;
-    Yield* _parent;
+    Yield_* _parent;
     std::shared_ptr<TimeoutState> _timeout_state;
     List _children;
     Clock::time_point _start_time;
 };
 
 inline
-void Yield::stop_timing()
+void Yield_::stop_timing()
 {
     if (!_timeout_state) {
         if (_parent) _parent->stop_timing();
@@ -231,7 +231,7 @@ void Yield::stop_timing()
 }
 
 inline
-void Yield::start_timing()
+void Yield_::start_timing()
 {
     Clock::duration timeout = std::chrono::seconds(30);
 
@@ -248,7 +248,7 @@ void Yield::start_timing()
             auto notify = [&](Clock::duration d) {
                 LOG_WARN(ts->self->tag()
                         , " is still working after "
-                        , Yield::duration_secs(d), " seconds");
+                        , Yield_::duration_secs(d), " seconds");
             };
 
             boost::optional<Clock::duration> first_duration
@@ -274,32 +274,32 @@ void Yield::start_timing()
 
 template<class... Args>
 inline
-void Yield::log(Args&&... args)
+void Yield_::log(Args&&... args)
 {
     if (logger.get_threshold() > INFO)
         return;  // avoid string conversion early
 
-    Yield::log(INFO, boost::string_view(util::str(std::forward<Args>(args)...)));
+    Yield_::log(INFO, boost::string_view(util::str(std::forward<Args>(args)...)));
 }
 
 inline
-void Yield::log(boost::string_view str)
+void Yield_::log(boost::string_view str)
 {
-    Yield::log(INFO, str);
+    Yield_::log(INFO, str);
 }
 
 template<class... Args>
 inline
-void Yield::log(log_level_t log_level, Args&&... args)
+void Yield_::log(log_level_t log_level, Args&&... args)
 {
     if (logger.get_threshold() > log_level)
         return;  // avoid string conversion early
 
-    Yield::log(log_level, boost::string_view(util::str(std::forward<Args>(args)...)));
+    Yield_::log(log_level, boost::string_view(util::str(std::forward<Args>(args)...)));
 }
 
 inline
-void Yield::log(log_level_t log_level, boost::string_view str)
+void Yield_::log(log_level_t log_level, boost::string_view str)
 {
     using boost::string_view;
 
@@ -322,7 +322,7 @@ void Yield::log(log_level_t log_level, boost::string_view str)
 
 template<class Ret>
 inline
-Ret or_throw( Yield yield
+Ret or_throw( Yield_ yield
             , const sys::error_code& ec
             , Ret&& ret = {})
 {
@@ -330,7 +330,7 @@ Ret or_throw( Yield yield
 }
 
 inline
-void or_throw( Yield yield
+void or_throw( Yield_ yield
              , const sys::error_code& ec)
 {
     return or_throw(static_cast<asio::yield_context>(yield), ec);
@@ -342,7 +342,7 @@ void or_throw( Yield yield
 namespace boost { namespace asio {
 
 template<class Sig>
-class async_result<::ouinet::Yield, Sig>
+class async_result<::ouinet::Yield_, Sig>
     : public async_result<asio::yield_context, Sig>
 {
     using Super = async_result<asio::yield_context, Sig>;

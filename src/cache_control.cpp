@@ -48,7 +48,7 @@ static boost::optional<beast::string_view> get(const R& r, http::field f)
     auto i = r.find(f);
     if (i == r.end())
       return boost::none;
-        
+
     return i->value();
 }
 
@@ -178,7 +178,7 @@ CacheControl::fetch(const Request& request,
                     sys::error_code& fresh_ec,
                     sys::error_code& cache_ec,
                     Cancel& cancel,
-                    Yield yield)
+                    Yield_ yield)
 {
     sys::error_code ec;
 
@@ -240,7 +240,7 @@ CacheControl::do_fetch(
         sys::error_code& fresh_ec,
         sys::error_code& cache_ec,
         Cancel& cancel,
-        Yield yield)
+        Yield_ yield)
 {
     FetchState fetch_state;
 
@@ -448,7 +448,7 @@ posix_time::time_duration CacheControl::max_cached_age() const
 //------------------------------------------------------------------------------
 auto CacheControl::make_fetch_fresh_job( const Request& rq
                                        , const CacheEntry* cached
-                                       , Yield yield)
+                                       , Yield_ yield)
 {
     AsyncJob<Session> job(_ex);
 
@@ -468,7 +468,7 @@ Session
 CacheControl::do_fetch_fresh( FetchState& fs
                             , const Request& rq
                             , const CacheEntry* cached
-                            , Yield yield)
+                            , Yield_ yield)
 {
     if (!fetch_fresh) {
         _YDEBUG(yield, "No fetch fresh operation");
@@ -492,7 +492,7 @@ CacheControl::do_fetch_stored(FetchState& fs,
                               const Request& rq,
                               const boost::optional<DhtGroup>& dht_group,
                               bool& is_fresh,
-                              Yield yield)
+                              Yield_ yield)
 {
     is_fresh = false;
     if (!fetch_stored || !dht_group) {

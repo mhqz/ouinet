@@ -82,7 +82,7 @@ public:
                   , const UPnPs&
                   , const bittorrent::MainlineDht* dht
                   , const util::UdpServerReachabilityAnalysis*
-                  , Yield yield);
+                  , Yield_ yield);
 
     Task notify_task(const std::string& task_name)
     {
@@ -124,7 +124,7 @@ private:
                       , Response&
                       , std::ostringstream&
                       , cache::Client*
-                      , Yield);
+                      , Yield_);
 
     void handle_status( ClientConfig&
                       , Client::RunningState
@@ -136,7 +136,7 @@ private:
                       , Response&
                       , std::ostringstream&
                       , cache::Client*
-                      , Yield);
+                      , Yield_);
 
     // Enabling the log file also enables debugging temporarily.
     void enable_log_to_file(ClientConfig&);

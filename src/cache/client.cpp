@@ -167,7 +167,7 @@ struct Client::Impl {
     bool serve_local( const http::request<http::empty_body>& req
                     , GenericStream& sink
                     , Cancel& cancel
-                    , Yield& yield)
+                    , Yield_& yield)
     {
         sys::error_code ec;
 
@@ -320,7 +320,7 @@ struct Client::Impl {
                           , const http::request<http::empty_body>& req
                           , http::status status
                           , const string& proto_error
-                          , Yield yield)
+                          , Yield_ yield)
     {
         auto res = util::http_error(req, status, OUINET_CLIENT_SERVER_STRING, proto_error);
         util::http_reply(con, res, static_cast<asio::yield_context>(yield));
@@ -328,14 +328,14 @@ struct Client::Impl {
 
     void handle_bad_request( GenericStream& con
                            , const http::request<http::empty_body>& req
-                           , Yield yield)
+                           , Yield_ yield)
     {
         return handle_http_error(con, req, http::status::bad_request, "", yield);
     }
 
     void handle_not_found( GenericStream& con
                          , const http::request<http::empty_body>& req
-                         , Yield yield)
+                         , Yield_ yield)
     {
         return handle_http_error( con, req, http::status::not_found
                                 , http_::response_error_hdr_retrieval_failed, yield);
@@ -359,7 +359,7 @@ struct Client::Impl {
                 , const GroupName& group
                 , bool is_head_request
                 , Cancel cancel
-                , Yield yield)
+                , Yield_ yield)
     {
         namespace err = asio::error;
 
@@ -449,7 +449,7 @@ struct Client::Impl {
                            , bool is_head_request
                            , std::size_t& body_size
                            , Cancel cancel
-                           , Yield yield)
+                           , Yield_ yield)
     {
         sys::error_code ec;
         cache::reader_uptr rr;
@@ -729,7 +729,7 @@ bool Client::enable_dht(shared_ptr<bt::MainlineDht> dht, size_t simultaneous_ann
 Session Client::load( const std::string& key
                     , const GroupName& group
                     , bool is_head_request
-                    , Cancel cancel, Yield yield)
+                    , Cancel cancel, Yield_ yield)
 {
     return _impl->load(key, group, is_head_request, cancel, yield);
 }
@@ -746,7 +746,7 @@ void Client::store( const std::string& key
 bool Client::serve_local( const http::request<http::empty_body>& req
                         , GenericStream& sink
                         , Cancel& cancel
-                        , Yield yield)
+                        , Yield_ yield)
 {
     return _impl->serve_local(req, sink, cancel, yield);
 }

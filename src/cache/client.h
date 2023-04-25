@@ -87,7 +87,7 @@ public:
                 , const GroupName& group
                 , bool is_head_request
                 , Cancel
-                , Yield);
+                , ouinet::Yield_);
 
     void store( const std::string& key
               , const GroupName& group
@@ -100,7 +100,7 @@ public:
     bool serve_local( const http::request<http::empty_body>&
                     , GenericStream& sink
                     , Cancel&
-                    , Yield);
+                    , ouinet::Yield_);
 
     std::size_t local_size( Cancel
                           , asio::yield_context) const;
