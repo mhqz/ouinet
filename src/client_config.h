@@ -15,7 +15,10 @@
 #include "util/bytes.h"
 #include "parse/endpoint.h"
 #include "util/crypto.h"
-#include "increase_open_file_limit.h"
+#ifndef __WIN32
+#   include "increase_open_file_limit.h"
+#endif
+
 #include "endpoint.h"
 #include "logger.h"
 #include "constants.h"
@@ -474,9 +477,11 @@ ClientConfig::ClientConfig(int argc, char* argv[])
         }
     }
 
+#ifndef __WIN32
     if (vm.count("open-file-limit")) {
         increase_open_file_limit(vm["open-file-limit"].as<unsigned int>());
     }
+#endif
 
     if (vm.count("max-cached-age")) {
         _max_cached_age = boost::posix_time::seconds(vm["max-cached-age"].as<int>());
