@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../namespaces.h"
-#include "../../util/signal.h"
+#include "../namespaces.h"
+#include "../util/signal.h"
 #include <boost/asio/ip/udp.hpp>
 #include <set>
 
