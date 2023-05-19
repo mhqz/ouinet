@@ -1,6 +1,10 @@
 #pragma once
 
-#include <boost/asio/windows/stream_handle.hpp>
+#ifdef _WIN32
+#include <boost/asio/windows/random_access_handle.hpp>
+#else
+#include <boost/asio/posix/stream_descriptor.hpp>
+#endif
 #include <boost/asio/spawn.hpp>
 #include <boost/filesystem.hpp>
 
@@ -8,41 +12,59 @@
 #include "../namespaces.h"
 #include "../or_throw.h"
 
+#ifdef _WIN32
+using async_file_handle = boost::asio::windows::random_access_handle;
+using native_handle_t = HANDLE;
+#else
+using async_file_handle = boost::asio::posix::stream_descriptor;
+using native_handle_t = int;
+#endif
+
 namespace ouinet { namespace util { namespace file_io {
 
-asio::windows::stream_handle
+async_file_handle
 open_or_create(const asio::executor&, const fs::path&, sys::error_code&);
 
-asio::windows::stream_handle
+async_file_handle
 open_readonly(const asio::executor&, const fs::path&, sys::error_code&);
 
 // Duplicate the descriptor, see dup(2).
 // The descriptor shares offset and flags with that of the original file,
 // but it stays open regardless of the original one getting closed,
 // so it must be closed separately.
-int dup_fd(asio::windows::stream_handle&, sys::error_code&);
+native_handle_t dup_fd(async_file_handle&, sys::error_code&);
 
-void fseek(asio::windows::stream_handle&, size_t pos, sys::error_code&);
+void fseek(async_file_handle&, size_t pos, sys::error_code&);
 
-size_t current_position(asio::windows::stream_handle&, sys::error_code&);
+bool fseek_native(async_file_handle&, size_t pos);
 
-size_t file_size(asio::windows::stream_handle&, sys::error_code&);
+size_t current_position(async_file_handle&, sys::error_code&);
 
-size_t file_remaining_size(asio::windows::stream_handle&, sys::error_code&);
+size_t end_position(async_file_handle& f, sys::error_code& ec);
 
-void truncate( asio::windows::stream_handle&
+size_t file_size(async_file_handle&, sys::error_code&);
+
+size_t file_remaining_size(async_file_handle&, sys::error_code&);
+
+void truncate( async_file_handle&
              , size_t new_length
              , sys::error_code&);
 
-void read( asio::windows::stream_handle&
+void read( async_file_handle&
          , asio::mutable_buffer
          , Cancel&
          , asio::yield_context);
 
-void write( asio::windows::stream_handle&
+void write( async_file_handle&
           , asio::const_buffer
           , Cancel&
           , asio::yield_context);
+
+void write_at( async_file_handle&
+             , asio::const_buffer
+             , uint64_t
+             , Cancel&
+             , asio::yield_context);
 
 // Check whether the directory exists, if not, try to create it.
 // If the directory doesn't exist nor it can be created, the error
@@ -50,7 +72,7 @@ void write( asio::windows::stream_handle&
 bool check_or_create_directory(const fs::path&, sys::error_code&);
 
 template<typename T>
-T read_number( asio::windows::stream_handle& f
+T read_number( async_file_handle& f
              , Cancel& cancel
              , asio::yield_context yield)
 {
@@ -62,7 +84,7 @@ T read_number( asio::windows::stream_handle& f
 }
 
 template<typename T>
-void write_number( asio::windows::stream_handle& f
+void write_number( async_file_handle& f
                  , T num
                  , Cancel& cancel
                  , asio::yield_context yield)
