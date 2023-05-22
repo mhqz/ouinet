@@ -1,6 +1,10 @@
 #pragma once
 
-#include <boost/asio/windows/stream_handle.hpp>
+#ifdef _WIN32
+#include <boost/asio/windows/random_access_handle.hpp>
+#else
+#include <boost/asio/posix/stream_descriptor.hpp>
+#endif
 #include <boost/filesystem.hpp>
 #include <boost/optional.hpp>
 #include <boost/system/error_code.hpp>
@@ -40,7 +44,12 @@ public:
     }
 
 public:
-    using lowest_layer_type = asio::windows::stream_handle;
+
+#ifdef _WIN32
+    using lowest_layer_type = asio::windows::random_access_handle;
+#else
+    using lowest_layer_type = asio::posix::stream_descriptor;
+#endif
 
     temp_file(const temp_file&) = delete;
     temp_file& operator=(const temp_file&) = delete;

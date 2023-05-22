@@ -197,7 +197,7 @@ private:
 
     std::string uri;  // for warnings, should use `Yield::log` instead
     http_response::Head head;  // for merging in the trailer later on
-    boost::optional<asio::windows::stream_handle> headf, bodyf, sigsf;
+    boost::optional<async_file_handle> headf, bodyf, sigsf;
 
     std::size_t block_size;
     std::size_t byte_count = 0;
@@ -206,7 +206,7 @@ private:
     ChainHasher chain_hasher;
 
     inline
-    asio::windows::stream_handle
+    async_file_handle
     create_file(const fs::path& fname, Cancel cancel, sys::error_code& ec)
     {
         auto f = util::file_io::open_or_create(ex, dirp / fname, ec);
@@ -563,9 +563,9 @@ private:
     }
 
 public:
-    HttpStoreReader( asio::windows::stream_handle headf
-                   , asio::windows::stream_handle sigsf
-                   , asio::windows::stream_handle bodyf
+    HttpStoreReader( async_file_handle headf
+                   , async_file_handle sigsf
+                   , async_file_handle bodyf
                    , boost::optional<Range> range)
         : headf(std::move(headf))
         , sigsf(std::move(sigsf))
@@ -631,9 +631,9 @@ public:
     }
 
 protected:
-    asio::windows::stream_handle headf;
-    asio::windows::stream_handle sigsf;
-    asio::windows::stream_handle bodyf;
+    async_file_handle headf;
+    async_file_handle sigsf;
+    async_file_handle bodyf;
 
     boost::optional<Range> range;
 
@@ -733,14 +733,14 @@ body_path_external( const fs::path& dirp
 }
 
 static
-asio::windows::stream_handle
+async_file_handle
 open_body_external( const asio::executor& ex
                   , const fs::path& dirp
                   , const fs::path& cdirp
                   , sys::error_code& ec)
 {
     auto body_cp = body_path_external(dirp, cdirp, ec);
-    if (ec) return asio::windows::stream_handle(ex);
+    if (ec) return async_file_handle(ex);
 
     return util::file_io::open_readonly(ex, body_cp, ec);
 }
