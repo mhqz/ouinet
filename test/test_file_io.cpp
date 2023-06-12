@@ -149,7 +149,7 @@ BOOST_AUTO_TEST_CASE(test_read_only_operations)
                 ctx.get_executor(),
                 temp_file.get_name(),
                 ec);
-        file_io::write_at(aio_file_ro, boost::asio::const_buffer("DEF456uvw", 9), 0, cancel, yield);
+        file_io::write(aio_file_ro, boost::asio::const_buffer("DEF456uvw", 9), cancel, yield);
         timer.expires_from_now(std::chrono::seconds(default_timer));
         timer.async_wait(yield);
         file_io::read(aio_file_ro, asio::buffer(data_in), cancel, yield);
