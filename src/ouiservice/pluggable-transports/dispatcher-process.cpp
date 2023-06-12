@@ -3,8 +3,17 @@
 #include "../../util/condition_variable.h"
 
 #include <boost/asio/steady_timer.hpp>
-#include <boost/process.hpp>
 #include <system_error>
+
+#ifdef _WIN32
+// Workaround for a boost/mingw bug.
+// This must occur before the inclusion of the boost/process.hpp header.
+// Taken from https://github.com/boostorg/process/issues/96
+#ifndef __kernel_entry
+#define __kernel_entry
+#endif
+#endif
+#include <boost/process.hpp>
 
 namespace ouinet {
 namespace ouiservice {
