@@ -1,7 +1,5 @@
 #include <boost/asio/read.hpp>
-#include <boost/asio/read_at.hpp>
 #include <boost/asio/write.hpp>
-#include <boost/asio/write_at.hpp>
 
 #include "file_io.h"
 
@@ -208,43 +206,21 @@ read(async_file_handle& f
 {
     auto cancel_slot = cancel.connect([&] { f.close(); });
     sys::error_code ec;
-    asio::async_read_at(f, 0, b, yield[ec]);
-    return_or_throw_on_error(yield, cancel, ec);
-}
-
-void
-write_at(async_file_handle& f
-        , asio::const_buffer b
-        , uint64_t offset
-        , Cancel& cancel
-        , asio::yield_context yield)
-{
-    auto cancel_slot = cancel.connect([&] { f.close(); });
-    sys::error_code ec_write;
-    asio::async_write_at(f, offset, b, [&ec_write](const boost::system::error_code& ec,
-                                                   std::size_t bytes_transferred){ec_write = std::move(ec);});
-    return_or_throw_on_error(yield, cancel, ec_write);
-}
-
-void
-write_at_end(async_file_handle& f
-        , asio::const_buffer b
-        , Cancel& cancel
-        , asio::yield_context yield)
-{
-    sys::error_code ec;
-    uint64_t offset = end_position(f, ec);
-    write_at(f, b, offset, cancel, yield);
+    asio::async_read(f, b, yield[ec]);
     return_or_throw_on_error(yield, cancel, ec);
 }
 
 void
 write(async_file_handle& f
-        , asio::const_buffer b
-        , Cancel& cancel
-        , asio::yield_context yield)
+     , asio::const_buffer b
+     , Cancel& cancel
+     , asio::yield_context yield)
 {
-    write_at_end(f, b, cancel, yield);
+    auto cancel_slot = cancel.connect([&] { f.close(); });
+    sys::error_code ec_write;
+    asio::async_write(f, b, [&ec_write](const boost::system::error_code& ec,
+                                        std::size_t bytes_transferred){ec_write = std::move(ec);});
+    return_or_throw_on_error(yield, cancel, ec_write);
 }
 
 #endif

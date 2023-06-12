@@ -7,7 +7,7 @@
 #include <boost/asio/spawn.hpp>
 #include <boost/filesystem/path.hpp>
 #ifdef _WIN32
-#include <boost/asio/windows/random_access_handle.hpp>
+#include "../../lib/asio/windows/random_access_handle_extended.hpp"
 #else
 #include <boost/asio/posix/stream_descriptor.hpp>
 #endif
@@ -33,7 +33,7 @@ static const std::string response_available_data = http_::header_prefix + "Avail
 using reader_uptr = std::unique_ptr<http_response::AbstractReader>;
 
 #ifdef _WIN32
-using async_file_handle = boost::asio::windows::random_access_handle;
+using async_file_handle = random_access_handle_extended;
 #else
 using async_file_handle = boost::asio::posix::stream_descriptor;
 #endif

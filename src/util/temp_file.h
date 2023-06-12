@@ -1,7 +1,7 @@
 #pragma once
 
 #ifdef _WIN32
-#include <boost/asio/windows/random_access_handle.hpp>
+#include "../../lib/asio/windows/random_access_handle_extended.hpp"
 #else
 #include <boost/asio/posix/stream_descriptor.hpp>
 #endif
@@ -46,7 +46,7 @@ public:
 public:
 
 #ifdef _WIN32
-    using lowest_layer_type = asio::windows::random_access_handle;
+    using lowest_layer_type = random_access_handle_extended;
 #else
     using lowest_layer_type = asio::posix::stream_descriptor;
 #endif

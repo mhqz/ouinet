@@ -1,7 +1,7 @@
 #pragma once
 
 #ifdef _WIN32
-#include <boost/asio/windows/random_access_handle.hpp>
+#include "../lib/asio/windows/random_access_handle_extended.hpp"
 #else
 #include <boost/asio/posix/stream_descriptor.hpp>
 #endif
@@ -13,7 +13,7 @@
 #include "../or_throw.h"
 
 #ifdef _WIN32
-using async_file_handle = boost::asio::windows::random_access_handle;
+using async_file_handle = random_access_handle_extended;
 using native_handle_t = HANDLE;
 #else
 using async_file_handle = boost::asio::posix::stream_descriptor;
