@@ -84,7 +84,7 @@ find_package(CPPUPnP REQUIRED)
 
 #add_subdirectory(./src/ouiservice/i2p)
 #add_subdirectory(./src/ouiservice/lampshade)
-add_subdirectory(./src/ouiservice/obfs4proxy)
+#add_subdirectory(./src/ouiservice/obfs4proxy)
 
 ################################################################################
 file(GLOB client_sources
