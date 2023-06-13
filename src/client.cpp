@@ -54,7 +54,7 @@
 #endif // ifndef __ANDROID__
 
 #include "ouiservice.h"
-#include "ouiservice/i2p.h"
+//#include "ouiservice/i2p.h"
 #include "ouiservice/lampshade.h"
 #include "ouiservice/pt-obfs2.h"
 #include "ouiservice/pt-obfs3.h"
@@ -2736,15 +2736,15 @@ void Client::State::setup_injector(asio::yield_context yield)
     std::unique_ptr<OuiServiceImplementationClient> client;
 
     if (injector_ep->type == Endpoint::I2pEndpoint) {
+        /*
         auto i2p_service = make_shared<ouiservice::I2pOuiService>((_config.repo_root()/"i2p").string(), _ctx.get_executor());
         auto i2p_client = i2p_service->build_client(injector_ep->endpoint_string);
 
-        /*
         if (!i2p_client->verify_endpoint()) {
             return or_throw(yield, ec = asio::error::invalid_argument);
         }
-        */
         client = std::move(i2p_client);
+        */
     } else if (injector_ep->type == Endpoint::TcpEndpoint) {
         auto tcp_client = make_unique<ouiservice::TcpOuiServiceClient>(_ctx.get_executor(), injector_ep->endpoint_string);
 
