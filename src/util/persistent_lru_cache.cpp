@@ -34,7 +34,7 @@ fs::path path_from_key(const fs::path& dir, const std::string& key) {
 }
 
 bool is_cache_entry(const struct dirent* entry) {
-    return (entry->d_type == DT_REG
+    return (boost::filesystem::is_regular(entry->d_name)
             && strstr(entry->d_name, temp_file_prefix) != entry->d_name);
 }
 
