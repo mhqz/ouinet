@@ -232,7 +232,7 @@ endif()
 
 ################################################################################
 # Tests
-#if (NOT "${CMAKE_SYSTEM_NAME}" STREQUAL "Android")
-#    add_subdirectory(test)
-#endif()
+if (NOT "${CMAKE_SYSTEM_NAME}" STREQUAL "Android")
+    add_subdirectory(test)
+endif()
 ################################################################################
