@@ -42,7 +42,7 @@ static optional<string_view> get(const Request& rq, http::field f)
 template<class F> static void run_spawned(asio::io_context& ctx, F&& f) {
     asio::spawn(ctx, [&ctx, f = forward<F>(f)](auto yield) {
             try {
-                f(Yield(ctx, yield));
+                f(Yield_(ctx, yield));
             }
             catch (const std::exception& e) {
                 BOOST_ERROR(string("Test ended with exception: ") + e.what());
@@ -97,7 +97,7 @@ Session make_session(
 Session make_session(
         asio::io_context& ctx,
         Response rs,
-        Yield y)
+        Yield_ y)
 {
     return make_session(ctx, move(rs), static_cast<asio::yield_context>(y));
 }
@@ -116,7 +116,7 @@ Entry make_entry(
         asio::io_context& ctx,
         posix_time::ptime created,
         Response rs,
-        Yield y)
+        Yield_ y)
 {
     return make_entry(ctx, move(created), move(rs), static_cast<asio::yield_context>(y));
 }

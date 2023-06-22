@@ -221,7 +221,7 @@ template<class F>
 static void run_spawned(asio::io_context& ctx, F&& f) {
     asio::spawn(ctx, [&ctx, f = forward<F>(f)] (auto yield) {
             try {
-                f(Yield(ctx, yield));
+                f(Yield_(ctx, yield));
             }
             catch (const std::exception& e) {
                 BOOST_ERROR(string("Test ended with exception: ") + e.what());
