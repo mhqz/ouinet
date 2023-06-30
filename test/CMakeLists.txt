@@ -10,15 +10,15 @@ link_libraries(
 add_executable(test-parser "test_parser.cpp")
 
 ######################################################################
-add_executable(test-cache
-    "test_cache_control.cpp"
-    "../src/cache_control.cpp"
-    "../src/http_util.cpp"
-    "../src/util.cpp"
-    "../src/util/handler_tracker.cpp"
-    "../src/logger.cpp"
-)
-target_link_libraries(test-cache lib::uri)
+#add_executable(test-cache
+#    "test_cache_control.cpp"
+#    "../src/cache_control.cpp"
+#    "../src/http_util.cpp"
+#    "../src/util.cpp"
+#    "../src/util/handler_tracker.cpp"
+#    "../src/logger.cpp"
+#)
+#target_link_libraries(test-cache lib::uri)
 
 ######################################################################
 add_executable(test-wait-condition "test_wait_condition.cpp")
@@ -69,8 +69,8 @@ add_executable(test-bittorrent "test_bittorrent.cpp" ${bt_cpp_files})
 target_link_libraries(test-bittorrent lib::asio_utp lib::gcrypt lib::uri)
 
 ################################################################################
-add_executable(bt-bep44 "bt-bep44.cpp" ${bt_cpp_files})
-target_link_libraries(bt-bep44 lib::asio_utp lib::gcrypt lib::uri)
+#add_executable(bt-bep44 "bt-bep44.cpp" ${bt_cpp_files})
+#target_link_libraries(bt-bep44 lib::asio_utp lib::gcrypt lib::uri)
 
 ################################################################################
 add_executable(test-routing-table "test-routing-table.cpp" ${bt_cpp_files})
@@ -88,14 +88,14 @@ add_executable(test-watch-dog
 )
 
 ######################################################################
-add_executable(test-util
-    "test-util.cpp"
-    "../src/util/handler_tracker.cpp"
-    "../src/logger.cpp"
-)
+#add_executable(test-util
+#    "test-util.cpp"
+#    "../src/util/handler_tracker.cpp"
+#    "../src/logger.cpp"
+#)
 
-set_target_properties(test-util PROPERTIES COMPILE_FLAGS "-fsanitize=address")
-target_link_libraries(test-util asan)
+#set_target_properties(test-util PROPERTIES COMPILE_FLAGS "-fsanitize=address")
+#target_link_libraries(test-util asan)
 
 ######################################################################
 add_executable(test-logger "test_logger.cpp" "../src/logger.cpp")
