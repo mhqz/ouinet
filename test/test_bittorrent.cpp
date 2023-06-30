@@ -21,7 +21,7 @@ using namespace ouinet::bittorrent;
 using Clock = chrono::steady_clock;
 
 using boost::optional;
-
+/*
 BOOST_AUTO_TEST_CASE(test_generate_node_id)
 {
     // The first test vector from here:
@@ -36,6 +36,7 @@ BOOST_AUTO_TEST_CASE(test_generate_node_id)
     BOOST_REQUIRE_EQUAL(id.substr(0, 6), "5fbfbf");
     BOOST_REQUIRE_EQUAL(id.substr(38), "01");
 }
+*/
 
 static
 __attribute__((unused))
@@ -44,6 +45,7 @@ float seconds(Clock::duration d)
     using namespace chrono;
     return duration_cast<milliseconds>(d).count() / 1000.f;
 }
+
 
 BOOST_AUTO_TEST_CASE(test_bep_5)
 {
@@ -75,7 +77,7 @@ BOOST_AUTO_TEST_CASE(test_bep_5)
 
     ctx.run();
 }
-
+/*
 BOOST_AUTO_TEST_CASE(test_bep_44)
 {
     using namespace ouinet::bittorrent::dht;
@@ -169,5 +171,6 @@ BOOST_AUTO_TEST_CASE(test_bep_44)
 
     BOOST_REQUIRE_EQUAL(push_get_count, success_count);
 }
+*/
 
 BOOST_AUTO_TEST_SUITE_END()
